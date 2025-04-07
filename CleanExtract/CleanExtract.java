@@ -5,16 +5,22 @@ public class CleanExtract {
 
         for (String part : parts) {
             String trimmed = part.strip();
-            int firstDot = trimmed.indexOf('.');
-            int lastDot = trimmed.lastIndexOf('.');
+            long dotCount = trimmed.chars().filter(c -> c == '.').count();
 
-            if (firstDot != -1 && lastDot != -1 && firstDot < lastDot) {
+            if (dotCount >= 2) {
+                int firstDot = trimmed.indexOf('.');
+                int lastDot = trimmed.lastIndexOf('.');
                 String inner = trimmed.substring(firstDot + 1, lastDot).strip();
                 if (!inner.isEmpty()) {
                     result.append(inner).append(" ");
                 }
-            } else if (!trimmed.contains(".")) {
-                // If there are no dots at all, consider it a clean sentence
+            } else if (dotCount == 1) {
+                // Remove the single dot and include the rest
+                String cleaned = trimmed.replace(".", "").strip();
+                if (!cleaned.isEmpty()) {
+                    result.append(cleaned).append(" ");
+                }
+            } else if (!trimmed.isEmpty()) {
                 result.append(trimmed).append(" ");
             }
         }
