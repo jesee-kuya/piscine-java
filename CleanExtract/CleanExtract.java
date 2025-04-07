@@ -10,8 +10,14 @@ public class CleanExtract {
             int firstDot = substring.indexOf('.');
             int lastDot = substring.lastIndexOf('.');
             
-            if (firstDot != -1 && lastDot != -1 && firstDot <= lastDot) {
+            if (firstDot != -1 && lastDot != -1 && firstDot < lastDot) {
                 String extracted = substring.substring(firstDot + 1, lastDot).trim();
+                if (!extracted.isEmpty()) {
+                    resultParts.add(extracted);
+                }
+            } else if (firstDot != -1 && lastDot != -1 && firstDot == lastDot) {
+                // Handle cases where there's only one '.'
+                String extracted = substring.substring(firstDot + 1).trim();
                 if (!extracted.isEmpty()) {
                     resultParts.add(extracted);
                 }
