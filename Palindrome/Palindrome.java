@@ -1,6 +1,6 @@
 public class Palindrome {
     public static boolean isPalindrome(String s) {
-        if (s == null || s.isEmpty()) {
+        if (s == null) {
             return false;
         }
         int count = s.length() - 1;
