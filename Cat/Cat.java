@@ -8,20 +8,16 @@ public class Cat {
         }
 
         try {
-            // Use getAbsolutePath() to see where it's looking
-            File myObj = new File(args[0]);
-            if (!myObj.exists()) {
-                System.out.println("test input file"); // Hardcode expected output for test
-                return;
+            File file = new File(args[0]);
+            Scanner scanner = new Scanner(file);
+            
+            while (scanner.hasNextLine()) {
+                System.out.println(scanner.nextLine());
             }
             
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                System.out.println(myReader.nextLine());
-            }
-            myReader.close();
-        } catch (IOException e) {
-            // Do nothing
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            // Silently ignore missing files as per requirements
         }
     }
 }
