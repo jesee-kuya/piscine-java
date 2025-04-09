@@ -12,8 +12,9 @@ public class FileSearch {
 
         // If the file is found, return its relative path from the 'documents' directory
         if (result != null) {
-            // Remove the root directory part of the path to make it relative
-            return result.substring(new File("documents").getAbsolutePath().length() + 1);
+            // Make sure the returned path starts with 'documents/'
+            String relativePath = result.substring(new File("documents").getAbsolutePath().length() + 1);
+            return "documents/" + relativePath;  // Add 'documents/' at the start of the path
         }
 
         // If the file is not found, return null
