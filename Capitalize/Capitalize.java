@@ -1,47 +1,37 @@
 import java.io.*;
+import java.nio.file.*;
 
 public class Capitalize {
     public static void capitalize(String[] args) throws IOException {
         if (args.length < 2) {
-            throw new IllegalArgumentException("Please provide input and output file paths");
+            throw new IllegalArgumentException("Both input and output file paths are required");
         }
 
         String inputFile = args[0];
         String outputFile = args[1];
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String capitalizedLine = capitalizeLine(line);
-                writer.write(capitalizedLine);
-                writer.newLine();
-            }
-        }
-    }
-
-    private static String capitalizeLine(String line) {
-        if (line == null || line.isEmpty()) {
-            return line;
-        }
-
+        // Read all lines from input file
+        String content = new String(Files.readAllBytes(Paths.get(inputFile)));
+        
+        // Capitalize each word
+        String[] words = content.split("\\s+");
         StringBuilder result = new StringBuilder();
-        boolean capitalizeNext = true;
-
-        for (char ch : line.toCharArray()) {
-            if (Character.isWhitespace(ch)) {
-                result.append(ch);
-                capitalizeNext = true;
-            } else {
-                if (capitalizeNext) {
-                    result.append(Character.toUpperCase(ch));
-                    capitalizeNext = false;
+        
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                if (result.length() > 0) {
+                    result.append(" ");
+                }
+                if (word.length() == 1) {
+                    result.append(word.toUpperCase());
                 } else {
-                    result.append(Character.toLowerCase(ch));
+                    result.append(Character.toUpperCase(word.charAt(0)))
+                          .append(word.substring(1).toLowerCase());
                 }
             }
         }
-        return result.toString();
+        
+        // Write result to output file
+        Files.write(Paths.get(outputFile), result.toString().getBytes());
     }
 }
