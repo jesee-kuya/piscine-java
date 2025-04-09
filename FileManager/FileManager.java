@@ -1,57 +1,67 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.*;
 
 public class FileManager {
-    /**
-     * Creates a file with the specified name and content.
-     * 
-     * @param fileName the name of the file to create
-     * @param content the content to write to the file
-     * @throws IOException if an I/O error occurs
-     */
+
+    // Method to create a file with the given name and content
     public static void createFile(String fileName, String content) throws IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(fileName));
+        // Create the file if it doesn't exist
+        File file = new File(fileName);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        
+        // Write the content to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(content);
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
     }
-    
-    /**
-     * Returns the content of the specified file.
-     * 
-     * @param fileName the name of the file to read
-     * @return the content of the file as a String
-     * @throws IOException if an I/O error occurs
-     */
+
+    // Method to get the content of the file
     public static String getContentFile(String fileName) throws IOException {
         StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            int c;
-            while ((c = reader.read()) != -1) {
-                content.append((char) c);
+        File file = new File(fileName);
+        
+        // Ensure the file exists before reading
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
             }
+        } else {
+            throw new FileNotFoundException("File not found: " + fileName);
         }
+        
         return content.toString();
     }
-    
-    /**
-     * Deletes the specified file.
-     * 
-     * @param fileName the name of the file to delete
-     */
+
+    // Method to delete the file
     public static void deleteFile(String fileName) {
         File file = new File(fileName);
         if (file.exists()) {
-            file.delete();
+            if (file.delete()) {
+                System.out.println("File deleted successfully: " + fileName);
+            } else {
+                System.out.println("Failed to delete the file: " + fileName);
+            }
+        } else {
+            System.out.println("File not found: " + fileName);
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Example usage of the functions
+            String fileName = "testfile.txt";
+            String content = "Hello, this is a test file!";
+            
+            createFile(fileName, content);
+            System.out.println("File content:\n" + getContentFile(fileName));
+            deleteFile(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
