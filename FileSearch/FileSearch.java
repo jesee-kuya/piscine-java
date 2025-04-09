@@ -6,9 +6,18 @@ public class FileSearch {
     public static String searchFile(String fileName) {
         // Define the root folder as 'documents' at the root of the current directory
         File rootFolder = new File("documents");
-        
-        // Start searching the folder recursively
-        return searchInFolder(rootFolder, fileName);
+
+        // Start searching the folder recursively and get the result
+        String result = searchInFolder(rootFolder, fileName);
+
+        // If the file is found, return its relative path from the 'documents' directory
+        if (result != null) {
+            // Remove the root directory part of the path to make it relative
+            return result.substring(new File("documents").getAbsolutePath().length() + 1);
+        }
+
+        // If the file is not found, return null
+        return null;
     }
 
     // Helper method to search the file in the folder recursively
@@ -22,7 +31,7 @@ public class FileSearch {
             if (files != null) {
                 // Iterate through all files and subfolders
                 for (File file : files) {
-                    // If the file matches the name, return its path
+                    // If the file matches the name, return its absolute path
                     if (file.isFile() && file.getName().equals(fileName)) {
                         return file.getAbsolutePath();
                     }
@@ -45,7 +54,7 @@ public class FileSearch {
         // Example usage of the searchFile function
         String fileName = "testfile.txt";
         String result = searchFile(fileName);
-        
+
         if (result != null) {
             System.out.println("File found at: " + result);
         } else {
