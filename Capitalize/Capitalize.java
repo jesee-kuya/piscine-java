@@ -1,16 +1,47 @@
-import java.util.Scanner;
-class String_capitalize {
-    public static void main(String[] args) {
-       Scanner sc=new Scanner(System.in);
-       String sentence=sc.nextLine();
-       String[] words = sentence.split(" ");
-        for (int i = 0; i < words.length; i++) { 
-            String firstLetter = words[i].substring(0, 1);
-            String restOfWord = words[i].substring(1);
-            firstLetter = firstLetter.toUpperCase();
-            words[i] = firstLetter + restOfWord;
+import java.io.*;
+
+public class Capitalize {
+    public static void capitalize(String[] args) throws IOException {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Please provide input and output file paths");
         }
-        String capitalizedSentence = String.join(" ", words);
-        System.out.println("Capitalized sentence: " + capitalizedSentence);
+
+        String inputFile = args[0];
+        String outputFile = args[1];
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String capitalizedLine = capitalizeLine(line);
+                writer.write(capitalizedLine);
+                writer.newLine();
+            }
+        }
+    }
+
+    private static String capitalizeLine(String line) {
+        if (line == null || line.isEmpty()) {
+            return line;
+        }
+
+        StringBuilder result = new StringBuilder();
+        boolean capitalizeNext = true;
+
+        for (char ch : line.toCharArray()) {
+            if (Character.isWhitespace(ch)) {
+                result.append(ch);
+                capitalizeNext = true;
+            } else {
+                if (capitalizeNext) {
+                    result.append(Character.toUpperCase(ch));
+                    capitalizeNext = false;
+                } else {
+                    result.append(Character.toLowerCase(ch));
+                }
+            }
+        }
+        return result.toString();
     }
 }
