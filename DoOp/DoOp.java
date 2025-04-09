@@ -1,7 +1,7 @@
 public class DoOp {
     public static String operate(String[] args) {
         if (args.length < 3) {
-            return "it depend on the input";
+            return "Error";
         }
         int num1 = Integer.parseInt(args[0]);
         int num2 = Integer.parseInt(args[2]);
