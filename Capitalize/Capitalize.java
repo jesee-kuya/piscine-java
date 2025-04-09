@@ -1,42 +1,48 @@
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class Capitalize {
     public static void capitalize(String[] args) throws IOException {
         if (args.length < 2) {
-            return; // If we don't have both input and output files, return without doing anything.
+            throw new IllegalArgumentException("Please provide input and output file paths");
         }
 
-        String inputFilePath = args[0];
-        String outputFilePath = args[1];
+        String inputFile = args[0];
+        String outputFile = args[1];
 
-        // Read the content from the input file
-        String content = new String(Files.readAllBytes(Paths.get(inputFilePath)));
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
 
-        // Capitalize each word in the content
-        String capitalizedContent = capitalizeWords(content);
-
-        // Write the capitalized content to the output file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-            writer.write(capitalizedContent);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String capitalizedLine = capitalizeLine(line);
+                writer.write(capitalizedLine);
+                writer.newLine();
+            }
         }
     }
 
-    private static String capitalizeWords(String input) {
-        // Split input into words, capitalize each word, and join them back together
-        String[] words = input.split("\\s+");
-        StringBuilder capitalized = new StringBuilder();
-
-        for (String word : words) {
-            if (!word.isEmpty()) {
-                capitalized.append(Character.toUpperCase(word.charAt(0)))
-                           .append(word.substring(1))
-                           .append(" ");
-            }
+    private static String capitalizeLine(String line) {
+        if (line == null || line.isEmpty()) {
+            return line;
         }
 
-        // Remove the trailing space at the end
-        return capitalized.toString().trim();
+        StringBuilder result = new StringBuilder();
+        String[] words = line.split(" ");
+        for (int i = 0; i < words.length; i++) {
+            if (!words[i].isEmpty()) {
+                if (i > 0) {
+                    result.append(" ");
+                }
+                result.append(capitalizeWord(words[i]));
+            }
+        }
+        return result.toString();
+    }
+
+    private static String capitalizeWord(String word) {
+        if (word.isEmpty()) {
+            return word;
+        }
+        return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
     }
 }
